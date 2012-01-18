@@ -1,0 +1,6 @@
+Do simple hash functions really work for network traffic?
+
+Evaluating an "average measure of cond. entropy" in the traffic
+from any given trace, using little space and time aka sketches
+
+Conclusion: we need more data!!
