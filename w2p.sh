@@ -17,7 +17,7 @@
 #PBS -M ljose@Princeton.EDU
 #
 set urlday='https://data.caida.org/datasets/passive-2009/equinix-sanjose/20090416-130000.UTC'
-set hhmmss='130300'
+set hhmmss='130000'
 set trace='equinix-sanjose.dirA.20090416'
 set dir='/n/fs/hhh/random'
 set python='/n/fs/ugrad/ug12/ljose/Python-3.1.2/python' 
@@ -48,7 +48,7 @@ wget --directory-prefix=$tracefiledir --http-user=jrex@cs.princeton.edu --http-p
 gunzip $tracefiledir/$gzfile
 echo "unzipped"
 
-(tcpdump -nnlr $tracefiledir/$pcapfile | $tracefiledir/mytcpdump2csv.pl "sport" > $tracefiledir/$tracefile.sport.csv) >& $tracefiledir/$tracefile.sport.csv.err
+#(tcpdump -nnlr $tracefiledir/$pcapfile | $tracefiledir/mytcpdump2csv.pl "sport" > $tracefiledir/$tracefile.sport.csv) >& $tracefiledir/$tracefile.sport.csv.err
 
 #tcpdump -nnr $dir/pcap/$trace/$trace-$hhmmss.$suff.pcap >$dir/dump/$trace/$trace-$hhmmss.$suff.dump
 echo "dumped"

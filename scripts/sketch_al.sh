@@ -6,15 +6,15 @@
 #
 # 1 node, 1 CPU per node (total 1 CPU), wall clock time of 30 hours
 #
-#PBS -l walltime=10:00:00,nodes=1:ppn=1
+#PBS -l walltime=50:00:00,nodes=5:ppn=5
 #
 # merge STDERR into STDOUT file
 #PBS -j oe
 #
 # send mail if the process aborts, when it begins, and
 # when it ends (abe)
-
-
+#PBS -m abe
+#PBS -M ljose@Princeton.EDU
 #
 
 # 060000 pcap contains [130000, 130001) GMT
@@ -30,22 +30,19 @@ endif
 
 cd $PBS_O_WORKDIR
 
-#equinix-sanjose.dirB.20090917-130500.UTC.anon.pcap
-#set urlday='https://data.caida.org/datasets/passive-2009/equinix-sanjose/20090416-130000.UTC'
-set hhmmss='130700'
-set raw='raw'
-set trace='equinix-sanjose.dirB.20090917'
+set urlday='https://data.caida.org/datasets/passive-2009/equinix-sanjose/20090416-130000.UTC'
+set hhmmss='130300'
+set trace='equinix-sanjose.dirA.20090416'
 set dir='/n/fs/hhh/random'
 #set python='/n/fs/ugrad/ug12/ljose/Python-3.1.2/python' 
 set suff='UTC.anon'
-set T=10
+set N=5
 
 
 echo "$hhmmss"
 
-set rawfiledir=$dir/$raw
 set tracefilename=$trace-$hhmmss.$suff
-set tracefiledir='/n/fs/hhh/lavanya/pcap'
+set tracefiledir=$dir/$trace
 set tracefile=$tracefilename
 set pcapfile=$tracefile.pcap
 set gzfile=$pcapfile.gz
@@ -62,11 +59,11 @@ set codedir='/n/fs/ugrad/ug12/ljose/git/random'
 #mv $tracefiledir/$hhmmss-$hhmmss-$N.err $tracefiledir/$hhmmss-$hhmmss-$N.err.old
 #mv $tracefiledir/$hhmmss-$hhmmss-$N $tracefiledir/$hhmmss-$hhmmss-$N.old
 
-echo "tcpdumping $tracefiledir/$pcapfile"
+#(tcpdump -nnlr $tracefiledir/$pcapfile | $codedir/mytcpdump2csv.pl "dport" | python $codedir/rawpairs.py $N > $tracefiledir/$hhmmss-$hhmmss-$N.raw) >& $tracefiledir/$hhmmss-$hhmmss-$N.err
 
-#(tcpdump -nnlr $tracefiledir/$pcapfile | $codedir/mytcpdump2csv.pl "dport" | python $codedir/distinctT.py $T > $rawfiledir/dp-$hhmmss-$hhmmss.T$T.raw) >& $rawfiledir/dp-$hhmmss-$hhmmss.T$T.err
+#time split -l 4000000 $tracefiledir/$hhmmss-$hhmmss-$N.raw $tracefiledir/$hhmmss-$hhmmss-$N.raw_
 
-time split -l 4000000 $rawfiledir/dp-$hhmmss-$hhmmss.T$T.raw $rawfiledir/dp-$hhmmss-$hhmmss-T$T.raw_
+time python simplesketcher.py $N $tracefiledir/$hhmmss-$hhmmss-$N.raw_al
 
 #(tcpdump -nnlr $tracefiledir/$pcapfile | $tracefiledir/mytcpdump2csv.pl "dport" | $tracefiledir/distinctNvectors.py $N > $tracefiledir/$tracefile.$N) #>& $tracefiledir/$tracefile.err
 

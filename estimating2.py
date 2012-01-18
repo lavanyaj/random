@@ -11,11 +11,7 @@ def main():
 	if len(sys.argv) < 2:
 		print(main.__docstring__)
 		return
-
-	if len(sys.argv) == 3:
-		start = int(sys.argv[2])
-	else:
-		start = 5
+	start = 5
 	rawfiledir='/n/fs/hhh/random/raw'
 	T = 10
 #Over time:
@@ -25,7 +21,7 @@ def main():
 		s.append(sketch.Sketch(j+1))
 
 	numseconds = int(sys.argv[1])
-	letters = ['a'+letter for letter in 'g']
+	letters = ['a'+letter for letter in 'abcdefg']
 	seconds = [str(num).zfill(2) for num in range(start, start+1+numseconds)]
 
 	subfiles = []
@@ -44,7 +40,7 @@ def main():
 			try:
 				input = open(f, 'rb')
 			except IOError:
-				print("could not open " + str((sec,pair)) + " file " + f)
+#				print("could not open " + str((sec,pair)) + " file " + f)
 				continue
 			s[j] = s[j] + pickle.load(input)
 			input.close()
@@ -59,10 +55,28 @@ def main():
 		
 			wtcondncp = sum_probijsqr/sum_probisqr
 			H2 = -math.log(wtcondncp, 2)
-			arr[time, j+1] = H2
+			if (sys.argv[2]=='h'):
+				arr[time, j+1] = H2
+			else:
+				arr[time, j+1] = sum_nijsqr
 		#print(str(j+2)+ "th needs " + str(H2)),
+
+	rows, columns = arr.shape
+
+	for c in range(columns):
+		print("S"+str(c+1)+' '),#+"/S"+str(c)+' '),
+	print('')
 	
-	print(arr)
+	for r in range(rows):
+		for c in range(columns):
+			print('%.3f ' % arr[r, c]),
+		print('')
+
+		
+#	print(arr)
+	output = open('e2out', 'wb')
+	pickle.dump(arr, output)
+	output.close()
 	pass
 
 if __name__ == '__main__':

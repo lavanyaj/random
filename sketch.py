@@ -10,7 +10,7 @@ class Sketch:
         # Count-Sketch error in F2 is sqrt(2/m) of F2 -- 1/16 of F2
         # CM error in fi is e/m of N -- 1/20 of N
         self.height = 3
-        self.width = self.TWOEXP15
+        self.width = self.TWOEXP9
         self.datadim = n
         self.numweights = 0
         self.sumweights = 0
@@ -29,7 +29,7 @@ class Sketch:
         self.sumweights += weight
 
     def fi(self, x64):
-        fi = numpy.zeroes(self.height)
+        fi = numpy.zeros(self.height)
         for i in range(self.height):
             hashi = self.mh.CW89hash4_U64(x64, self.width, self.mh.H89_4[i])
             Ci = self.C[i,hashi] 

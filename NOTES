@@ -1,3 +1,69 @@
+file sizes
+raw 1 second trace of dest ports 1.3G
+1/g split with 400K lines 214M
+1/g sketch 48K
+
+
+FROM ESTIMATES OVER TIME TO PLOT
+cp matrix to .dat
+and use plotexp.plt to plot . . .
+
+
+FROM SKETCHES TO ESTIMATES OVER TIME printed/ e2b
+Use python estimator2.py numseconds start (T=10)
+to read in the sketches and output a table of S_{n+1}/S_n
+as measured up to each second
+(second -- row, n -- column)
+
+
+THE SKETCHES ARE IN
+...hhh/random/, 
+
+Now T10_raw is all the distinct T-item vectors seen
+And T10_raw_aa.sketch.i is F2 sketch for Si
+
+
+
+FROM TRACE TO SKETCHES
+Run w2p2.sh- it takes the trace, 
+	changes to list of ports, 
+		to list of 10-item distinct vectors, 
+			then splits
+-- takes around 2 (I think) hrs per 1 second trace
+
+Then on each split (silly way: qsub sketch_aa.sh etc. after changing to T=3)
+time python simplesketcher.py 3 $tracefiledir/130000-130000-3.raw_aa for F2 of S_3s
+-- takes around a few seconds
+
+
+
+THE TRACE
+is ...hhh/lavanya/pcap
+------------------------
+replacing numbers in scripts
+set pair='aa' ; perl -pi -e "s/=6/=7/g" sketch_$pair.sh
+
+
+
+
+
+-----------
+OLD STUFF
+
+
+fixing datadim
+for k in list('defghijkl'):
+    f = '/n/fs/hhh/random/equinix-sanjose.dirA.20090416/130000-130000-3.raw_a'+k+'.sketch'
+    input = open(f, 'rb')
+    i = pickle.load(input)
+    i.datadim=3
+    input.close()
+    output = open(f, 'wb')
+    pickle.dump(i, output)
+    output.close()
+
+
+
 python version I've been using
 Python 2.6.2
 
@@ -9,15 +75,3 @@ time python simplesketcher.py 3 $tracefiledir/130000-130000-3.raw_aa
 
 setting trace file directory
 set tracefiledir=/n/fs/hhh/random/equinix-sanjose.dirA.20090416
-
-splitting a raw file
-time split -l 4000000 $tracefiledir/130000-130000-5.raw $tracefiledir/130000-130000-5.raw_
-
-listing raw file splits
-ls $tracefiledir/130000-130000-2.raw*
-
-listing sketch files
-ls $tracefiledir/130000-130000-2.raw*sketch | sed -n -e ":a" -e "$ s/\n/ /gp;N;b a"
-
-testing combinesketches
-python combinesketches.py 2 test.sketch.pkl /n/fs/hhh/random/equinix-sanjose.dirA.20090416/130000-130000-2.raw_aa.sketch /n/fs/hhh/random/equinix-sanjose.dirA.20090416/130000-130000-2.raw_ab.sketch

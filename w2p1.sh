@@ -17,12 +17,13 @@
 #PBS -M ljose@Princeton.EDU
 #
 set urlday='https://data.caida.org/datasets/passive-2009/equinix-sanjose/20090416-130000.UTC'
-set hhmmss='130100'
+set hhmmss='130000'
 set trace='equinix-sanjose.dirA.20090416'
 set dir='/n/fs/hhh/random'
 set python='/n/fs/ugrad/ug12/ljose/Python-3.1.2/python' 
 set suff='UTC.anon'
-set N=1
+set N=8
+
 # 060000 pcap contains [130000, 130001) GMT
 # its 1 second pickle in seconds(130001).pkl
 
@@ -42,13 +43,22 @@ set tracefiledir=$dir/$trace
 set tracefile=$tracefilename
 set pcapfile=$tracefile.pcap
 set gzfile=$pcapfile.gz
+set codedir='/n/fs/ugrad/ug12/ljose/git/random'
 
 #wget --directory-prefix=$tracefiledir --http-user=jrex@cs.princeton.edu --http-password=lavanya --no-check-certificate $urlday/$gzfile
 
 #gunzip $tracefiledir/$gzfile
 #echo "unzipped"
 
-(tcpdump -nnlr $tracefiledir/$pcapfile | $tracefiledir/mytcpdump2csv.pl "dport" | $tracefiledir/distinctNvectors.py $N > $tracefiledir/$tracefile.$N) #>& $tracefiledir/$tracefile.sport.csv.err
+rm $tracefiledir/$tracefile.$N.err.old
+rm $tracefiledir/$tracefile.$N.old
+
+mv $tracefiledir/$tracefile.$N.err $tracefiledir/$tracefile.$N.err.old
+mv $tracefiledir/$tracefile.$N $tracefiledir/$tracefile.$N.old
+
+(tcpdump -nnlr $tracefiledir/$pcapfile | $tracefiledir/mytcpdump2csv.pl "dport" | python $codedir/distinctNvectors.py $N > $tracefiledir/$tracefile.$N) >& $tracefiledir/$tracefile.$N.err
+
+#(tcpdump -nnlr $tracefiledir/$pcapfile | $tracefiledir/mytcpdump2csv.pl "dport" | $tracefiledir/distinctNvectors.py $N > $tracefiledir/$tracefile.$N) #>& $tracefiledir/$tracefile.err
 
 #tcpdump -nnr $dir/pcap/$trace/$trace-$hhmmss.$suff.pcap >$dir/dump/$trace/$trace-$hhmmss.$suff.dump
 echo "dumped"
